@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .building {
+            width: 400px;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            background-color: turquoise;
+            position: relative;
+        }
+
+        .floor {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 48px;
+            color: black;
+            font-size: 10px;
+            margin-top: 10px;
+            background: #CCC26B;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .elevator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-left: 10px;
+            width: 30px;
+            height: 45px;
+            background-color: #ECF2F7;
+            border: 1px solid black;
+            border-top: 4px solid black;
+            position: relative;
+        }
+
+        .btn {
+            width: 30px;
+            height: 30px;
+            background-color: goldenrod;
+            border: 2px solid darkgoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="num" type="number">
+    <div class="building">
+        <div id="floorsL" style="margin-left: 40px;"> </div>
+        <div id="elevators" style="display: flex;;"></div>
+        <div id="floorsR" style="margin-right: 40px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let input = document.getElementById('num');
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'A' + i;
+                buttons.textContent = i
+                floorsL.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'B' + i;
+                buttons.textContent = i
+                floorsR.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+        document.getElementById('num').addEventListener("change", function () {
+            let ele1 = document.createElement("div");
+            ele1.className = "elevator";
+            ele1.id = "e1";
+            ele1.textContent = 1;
+            elevators.appendChild(ele1);
+        })
+        document.getElementById('num').addEventListener("change", function () {
+            let ele2 = document.createElement("div");
+            ele2.className = "elevator";
+            ele2.id = "e2";
+            ele2.textContent = 2;
+            elevators.appendChild(ele2);
+        })
+
+             
+
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(document.getElementById('num').value);
+            let elevator1 = document.getElementById('e1');
+            let isAnimating = false;
+            let resumeTimeout;
+            let array = [];
+            let pendingArray = [];
+
+            function startElevatorAnimation(sortedArray, e1, dis) {
+                if (sortedArray.length > 0) {
+                    let selectedfloor = sortedArray.shift();
+                    e1.animate({ marginTop: ((floorcount - selectedfloor) * 60) + 10 }, 1000 * dis, function () {
+                        array.shift();
+                        console.log("shift",array)
+                        startElevatorAnimation(sortedArray, e1, dis);
+                        
+
+                        if (sortedArray.length > 0) {
+                            resumeTimeout = setTimeout(function () {
+                                startElevatorAnimation(sortedArray, e1, dis);
+                            }, 1000);
+
+                        } else {
+
+                            isAnimating = false;
+                            array = [];
+                            console.log("sortedArray", array);
+                        }
+                    });
+                }
+            }
+
+            for (let i = floorcount; i > 0; i--) {
+                document.getElementById('A' + i).addEventListener("click", function () {
+                    if (isAnimating) {
+                        $("#e1").stop();
+                        clearTimeout(resumeTimeout);
+                        isAnimating = false;
+                    }
+                    let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+                    let selectedPosition = i;
+                    array.unshift(selectedPosition);
+                    console.log("unshift", array)
+                    let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 60));
+                    let dis1 = distanceToElevator1 / 60;
+                    selectedfloor = ((floorcount - selectedPosition) * 60) + 10;
+                    if (array.length > 1) {
+                        if (selectedfloor < elevator1Position) {
+                            array.sort(function (a, b) { return a - b; });
+                            console.log("sort", array);
+                        } else {
+                            array.sort(function (a, b) { return b - a; });
+                            console.log("sort", array);
+                        }
+                    }
+
+                    // if (array.length > 1) {
+                    //     if (selectedfloor < elevator1Position) {
+                    //         array.sort(function (a, b) { return a - b; });
+                    //         console.log("sort", array);
+
+                    //     } else if(selectedfloor > elevator1Position) {
+
+                    //         array.sort(function (a, b) { return b - a; });
+                    //         console.log("sort", array)
+
+                    //         array.shift(selectedPosition)
+                    //         console.log("shift",array)
+
+                    //         pendingArray.unshift(selectedPosition)
+                    //         console.log("unshift", array)
+
+                    //         array.push(...pendingArray)
+                            
+                            
+                    //     } 
+                    
+                    // }
+                    startElevatorAnimation([...array], $('#e1'), dis1);
+                    isAnimating = true;
+                });
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+//         document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+//     let elevator1 = document.getElementById('e1');
+//     let isAnimating = false;
+//     let resumeTimeout;
+//     let currentDirection;
+//     let array = [];
+//     let pendingInputs = [];
+
+//     function startElevatorAnimation(sortedArray, e1, dis) {
+//         if (sortedArray.length > 0) {
+//             let selectedfloor = sortedArray[0];
+//             e1.animate({ marginTop: ((floorcount - selectedfloor) * 60) + 10 }, 1000 * dis, function () {
+//                 sortedArray.shift();
+//                 console.log("shift()", sortedArray)
+
+//                 if (sortedArray.length > 0) {
+//                     resumeTimeout = setTimeout(function () {
+//                         startElevatorAnimation(sortedArray, e1, dis);
+//                     }, 1000);
+//                 } else {
+//                     isAnimating = false;
+//                     array = [];
+
+//                     if (pendingInputs.length > 0) {
+//                         let nextDirection = pendingInputs[0] < selectedfloor ? "down" : "up";
+//                         handlePendingInputs(nextDirection);
+//                     }
+//                 }
+//             });
+//         }
+//     }
+
+//     function handlePendingInputs(direction) {
+//         currentDirection = direction;
+//         let nextInput = pendingInputs.shift();
+//         array.unshift(nextInput);
+//         console.log("unshift", array)
+
+//         let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//         let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - nextInput) * 60));
+//         let dis1 = distanceToElevator1 / 60;
+//         startElevatorAnimation([...array], $('#e1'), dis1);
+//         isAnimating = true;
+//     }
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+               
+//                 let selectedPosition = i;
+//                 pendingInputs.push(selectedPosition);
+//                 console.log("pendingInputs", pendingInputs);
+//             } else {
+//                 let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//                 let selectedPosition = i;
+//                 array.unshift(selectedPosition);
+//                 console.log("unshift", array)
+//                 let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 60));
+//                 let dis1 = distanceToElevator1 / 60;
+//                 selectedfloor = ((floorcount - selectedPosition) * 60) + 10;
+//                 if (array.length > 1) {
+//                     if (selectedfloor < elevator1Position) {
+//                         array.sort(function (a, b) { return a - b; });
+//                         console.log("sort", array);
+//                     } else {
+//                         array.sort(function (a, b) { return b - a; });
+//                         console.log("sort", array);
+//                     }
+//                 }
+//                 startElevatorAnimation([...array], $('#e1'), dis1);
+//                 isAnimating = true;
+//             }
+//         });
+//     }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // document.getElementById('num').addEventListener("change", function () {
+        //     let floorcount = parseInt(document.getElementById('num').value);
+        //     let elevator2 = document.getElementById('e2');
+        //     let isAnimating = false;
+        //     let resumeTimeout;
+        //     let array2 = [];
+
+        //     function startElevatorAnimation(sortedArray2, e2, dis) {
+        //         if (sortedArray2.length > 0) {
+        //             let selectedfloor = sortedArray2.shift();
+        //             e2.animate({ marginTop: ((floorcount - selectedfloor) * 60) + 10 }, 1000 * dis, function () {
+        //                 startElevatorAnimation(sortedArray2, e2, dis);
+        //             });
+        //         } else {
+        //             isAnimating = false;
+        //             array2 = []
+        //             console.log("sortedArray2", array2);
+        //         }
+        //     }
+        //     for (let i = floorcount; i > 0; i--) {
+        //         document.getElementById('B' + i).addEventListener("click", function () {
+        //             if (isAnimating) {
+        //                 $("#e2").stop();
+        //                 clearTimeout(resumeTimeout);
+        //                 isAnimating = false;
+        //             }
+        //             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+        //             let selectedPosition = i;
+        //             array2.unshift(selectedPosition);
+        //             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 60));
+        //             let dis2 = distanceToElevator2 / 60;
+        //             selectedfloor = ((floorcount - selectedPosition) * 60) + 10
+        //             if (array2.length > 1) {
+        //                 if (selectedfloor < (elevator2Position)) {
+        //                     array2.sort(function (a, b) { return a - b; });
+        //                     console.log("sort", array2);
+        //                 }
+        //                 else {
+        //                     array2.sort(function (a, b) { return b - a; });
+        //                     console.log("sort", array2);
+        //                 }
+        //             }
+        //             startElevatorAnimation([...array2], $('#e2'), dis2);
+        //             isAnimating = true;
+        //         });
+        //     }
+        // })
+    </script>
+</body>
+
+</html>

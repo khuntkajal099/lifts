@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elevator Simulation</title>
+    <style>
+        .building {
+            width: 400px;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            background-color: turquoise;
+            position: relative;
+        }
+
+        .floor {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 50px;
+            color: black;
+            font-size: 10px;
+            margin: 10px 0px;
+            background: #ccc26b;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .elevator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 10px;
+            width: 30px;
+            height: 40px;
+            background-color: #ecf2f7;
+            border: 2px solid black;
+            border-top: 5px solid black;
+            position: relative;
+        }
+
+        .btn {
+            width: 30px;
+            height: 30px;
+            background-color: goldenrod;
+            border: 2px solid darkgoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="num" type="number">
+    <div class="building">
+        <div id="floorsL" style="margin-left: 40px;"></div>
+        <div id="elevators" style="display: flex;"></div>
+        <div id="floorsR" style="margin-right: 40px;"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+    <script>
+
+    
+        let floorcount;
+
+       
+        document.getElementById('num').addEventListener("change", function () {
+            floorcount = parseInt(this.value);
+            createFloors('floorsL');
+            createFloors('floorsR');
+            createElevator('e1');
+            createElevator('e2');
+        });
+
+       
+        function createFloors(containerId) {
+            let container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i);
+                buttons.id = containerId === 'floorsL' ? 'A' + i : 'B' + i;
+                buttons.textContent = i;
+                container.appendChild(block);
+                block.appendChild(buttons);
+            }
+        }
+
+      
+        function createElevator(elevatorId) {
+            let elevatorsContainer = document.getElementById('elevators');
+            let elevator = document.createElement("div");
+            elevator.className = "elevator";
+            elevator.id = elevatorId;
+            elevator.textContent = elevatorId.substring(1);
+            elevatorsContainer.appendChild(elevator);
+        }
+
+       
+        function addFloorButtonListeners() {
+            for (let i = floorcount; i > 0; i--) {
+                document.getElementById('A' + i).addEventListener("click", function () {debugger
+                    addToQueue(i, getNearestElevator(i));
+                });
+
+                document.getElementById('B' + i).addEventListener("click", function () {
+                    addToQueue(i, getNearestElevator(i));
+                });
+            }
+        }
+
+        
+        let elevator1CurrentPosition = 0;
+        let elevator2CurrentPosition = 0;
+        let isAnimating = false;
+        let resumeTimeout;
+
+       
+        function addToQueue(floor, elevatorId) {
+            if (!isAnimating) {
+                moveElevator(floor, elevatorId);
+            } else {
+                inputQueue.unshift({ floor: floor, elevator: elevatorId });
+            }
+        }
+
+       
+        function moveElevator(selectedFloor, elevatorId) {
+            let elevator = $('#' + elevatorId);
+            let targetPosition = (floorcount - selectedFloor) * 65;
+
+            isAnimating = true;
+
+            elevator.animate({ marginTop: targetPosition }, 2000, function () {
+                isAnimating = false;
+                resumeTimeout = setTimeout(function () {
+                    elevator.animate({ marginTop: elevatorId === "e1" ? elevator1CurrentPosition : elevator2CurrentPosition }, 2000, function () {
+                        processQueue();
+                    });
+                }, 2000);
+            });
+        }
+
+        
+        function processQueue() {
+            if (inputQueue.length > 0) {
+                let nextInput = inputQueue.shift();
+                moveElevator(nextInput.floor, nextInput.elevator);
+            }
+        }
+
+       
+        function getNearestElevator(floor) {
+            let distanceToElevator1 = Math.abs(elevator1CurrentPosition - (floorcount - floor) * 65);
+            let distanceToElevator2 = Math.abs(elevator2CurrentPosition - (floorcount - floor) * 65);
+
+            return distanceToElevator1 > distanceToElevator2 ? "e2" : "e1";
+        }
+
+        
+        addFloorButtonListeners();
+    </script>
+</body>
+
+</html>

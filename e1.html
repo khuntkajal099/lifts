@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .building {
+            width: 400px;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            background-color: turquoise;
+            position: relative;
+        }
+
+        .floor {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 50px;
+            color: black;
+            font-size: 10px;
+            margin: 10px 0px;
+            background: #ccc26b;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .elevator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 10px;
+            width: 30px;
+            height: 40px;
+            background-color: #ecf2f7;
+            border: 2px solid black;
+            border-top: 5px solid black;
+            position: relative;
+        }
+
+        .btn {
+            width: 30px;
+            height: 30px;
+            background-color: goldenrod;
+            border: 2px solid darkgoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="num" type="number">
+    <div class="building">
+        <div id="floorsL" style="margin-left: 40px;"> </div>
+        <div id="elevators" style="display: flex;;"></div>
+        <div id="floorsR" style="margin-right: 40px;"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+    <script>
+
+
+        let input = document.getElementById('num');
+
+
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'A' + i;
+                buttons.textContent = i
+                floorsL.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'B' + i;
+                buttons.textContent = i
+                floorsR.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+
+        document.getElementById('num').addEventListener("change", function () {
+            let ele1 = document.createElement("div");
+            ele1.className = "elevator";
+            ele1.id = "e1";
+            ele1.textContent = 1;
+            elevators.appendChild(ele1);
+
+        })
+
+        document.getElementById('num').addEventListener("change", function () {
+            let ele2 = document.createElement("div");
+            ele2.className = "elevator";
+            ele2.id = "e2";
+            ele2.textContent = 2;
+            elevators.appendChild(ele2);
+        })
+        
+
+
+
+//         document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false;
+//     let resumeTimeout;
+//     let elevator1CurrentPosition = 0;
+//     let elevator2CurrentPosition = 0;
+//     let inputQueue = [];
+
+//     function processQueue() {
+//         if (inputQueue.length > 0) {
+//             inputQueue.sort((a, b) => {
+//                 let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - a.floor) * 65));
+//                 let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - a.floor) * 65));
+
+//                 return distanceToElevator1 - distanceToElevator2;
+//             });
+
+//             let nextInput = inputQueue.shift();
+//             moveElevator(nextInput.floor, nextInput.elevator);
+//         }
+//     }
+
+//     function moveElevator(selectedFloor, elevatorId) {
+//         if (isAnimating) {
+//             $('#e1, #e2').stop();
+//             clearTimeout(resumeTimeout);
+//             isAnimating = false;
+//         }
+
+//         let elevator = elevatorId === "e1" ? $('#e1') : $('#e2');
+//         let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+//         let selectedPosition = selectedFloor;
+
+//         let distanceToElevator = Math.abs(elevatorPosition - ((floorcount - selectedFloor) * 65));
+
+//         isAnimating = true;
+
+//         elevator.animate({ marginTop: ((floorcount - selectedFloor) * 65) }, 3000, function () {
+//             isAnimating = false;
+//             elevator1CurrentPosition = elevatorId === "e1" ? ((floorcount - selectedFloor) * 65) : elevator1CurrentPosition;
+//             elevator2CurrentPosition = elevatorId === "e2" ? ((floorcount - selectedFloor) * 65) : elevator2CurrentPosition;
+
+//             resumeTimeout = setTimeout(function () {
+//                 elevator.animate({ marginTop: elevatorId === "e1" ? elevator1CurrentPosition : elevator2CurrentPosition }, 2000, function () {
+//                     processQueue();
+//                 });
+//             }, 2000);
+//         });
+//     }
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             let selected = document.getElementById('A' + i);
+
+//             let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - i) * 65));
+
+//             let nearestElevator = distanceToElevator1 > distanceToElevator2 ? "e2" : "e1";
+
+//             inputQueue.push({ floor: i, elevator: nearestElevator });
+
+//             if (!isAnimating) {
+//                 processQueue();
+//             }
+//         });
+//     }
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('B' + i).addEventListener("click", function () {
+//             let selected = document.getElementById('B' + i)
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             let nearestElevator;
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     processQueue();
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     processQueue();
+//                 });
+//             }
+//         })
+//     }
+// });  
+
+document.getElementById('num').addEventListener("change", function () {
+    let floorcount = parseInt(document.getElementById('num').value);
+
+    let elevator1 = document.getElementById('e1');
+    let elevator2 = document.getElementById('e2');
+    let isAnimating = false;
+    let resumeTimeout;
+    let elevator1CurrentPosition = 0;
+    let elevator2CurrentPosition = 0;
+    let inputQueue = [];
+
+    function processQueue() {
+        if (inputQueue.length > 0) {
+            inputQueue.sort((a, b) => {
+                let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - a.floor) * 65));
+                let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - a.floor) * 65));
+
+                if (a.floor > b.floor) {
+                    return distanceToElevator2 - distanceToElevator1;
+                } else {
+                    return distanceToElevator1 - distanceToElevator2;
+                }
+            });
+
+            let nextInput = inputQueue.shift();
+            moveElevator(nextInput.floor, nextInput.elevator);
+        }
+    }
+
+    function moveElevator(selectedFloor, elevatorId) {
+        if (isAnimating) {
+            $('#e1, #e2').stop();
+            clearTimeout(resumeTimeout);
+            isAnimating = false;
+        }
+
+        let elevator = elevatorId === "e1" ? $('#e1') : $('#e2');
+        let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+        let selectedPosition = selectedFloor;
+
+        let distanceToElevator = Math.abs(elevatorPosition - ((floorcount - selectedFloor) * 65));
+
+        isAnimating = true;
+
+        elevator.animate({ marginTop: ((floorcount - selectedFloor) * 65) }, 3000, function () {
+            isAnimating = false;
+            elevator1CurrentPosition = elevatorId === "e1" ? ((floorcount - selectedFloor) * 65) : elevator1CurrentPosition;
+            elevator2CurrentPosition = elevatorId === "e2" ? ((floorcount - selectedFloor) * 65) : elevator2CurrentPosition;
+
+            resumeTimeout = setTimeout(function () {
+                elevator.animate({ marginTop: elevatorId === "e1" ? elevator1CurrentPosition : elevator2CurrentPosition }, 2000, function () {
+                    processQueue();
+                });
+            }, 2000);
+        });
+    }
+
+    function addToQueue(floor, elevatorId) {
+        inputQueue.push({ floor: floor, elevator: elevatorId });
+        if (!isAnimating) {
+            processQueue();
+        }
+    }
+
+    for (let i = floorcount; i > 0; i--) {
+        document.getElementById('A' + i).addEventListener("click", function () {
+            let selected = document.getElementById('A' + i);
+            addToQueue(i, getNearestElevator(i));
+        });
+    }
+
+    for (let i = floorcount; i > 0; i--) {
+        document.getElementById('B' + i).addEventListener("click", function () {
+            let selected = document.getElementById('B' + i);
+            addToQueue(i, getNearestElevator(i));
+        });
+    }
+
+    function getNearestElevator(floor) {
+        let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - floor) * 65));
+        let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - floor) * 65));
+
+        return distanceToElevator1 > distanceToElevator2 ? "e2" : "e1";
+    }
+});
+
+
+
+
+
+
+// document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false; 
+//     let resumeTimeout; 
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+//                 $('#e1, #e2').stop();
+//                 clearTimeout(resumeTimeout); 
+//                 isAnimating = false;
+//             }
+
+//             let selected = document.getElementById('A' + i);
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+                   
+//                     resumeTimeout = setTimeout(function () {
+//                         e2.animate({ marginTop: 0 }, 3000);
+//                     }, 2000);
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+                   
+//                     resumeTimeout = setTimeout(function () {
+//                         e1.animate({ marginTop: 0 }, 3000);
+//                     }, 2000);
+//                 });
+//             }
+
+//             isAnimating = true; 
+//         });
+//     }
+// });
+
+
+
+
+
+
+
+
+
+//         document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false;
+//     let resumeTimeout;
+//     let elevator1CurrentPosition = 0;
+//     let elevator2CurrentPosition = 0;
+//     let inputQueue = [];
+
+//     function processQueue() {
+//     if (inputQueue.length > 0) {
+       
+//         inputQueue.sort((a, b) => {
+//             if (elevator1CurrentPosition < elevator2CurrentPosition) {
+               
+//                 return b.floor - a.floor; 
+//             } else {
+               
+//                 return a.floor - b.floor;
+//             }
+//         });
+
+//         let nextInput = inputQueue.shift();
+//         moveElevator(nextInput.floor, nextInput.elevator);
+//     }
+// }
+
+
+//     function moveElevator(selectedFloor, elevatorId) {
+//         if (isAnimating) {
+//             $('#e1, #e2').stop();
+//             clearTimeout(resumeTimeout);
+//             isAnimating = false;
+//         }
+
+//         let elevator = elevatorId === "e1" ? $('#e1') : $('#e2');
+//         let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+//         let selectedPosition = selectedFloor;
+
+//         let distanceToElevator = Math.abs(elevatorPosition - ((floorcount - selectedFloor) * 65));
+
+//         isAnimating = true;
+//         elevator.animate({ marginTop: ((floorcount - selectedFloor) * 65) }, 3000, function () {
+//             isAnimating = false;
+//             elevator1CurrentPosition = elevatorId === "e1" ? ((floorcount - selectedFloor) * 65) : elevator1CurrentPosition;
+//             elevator2CurrentPosition = elevatorId === "e2" ? ((floorcount - selectedFloor) * 65) : elevator2CurrentPosition;
+
+//             resumeTimeout = setTimeout(function () {
+//                 elevator.animate({ marginTop: elevatorId === "e1" ? elevator1CurrentPosition : elevator2CurrentPosition }, 2000, function () {
+//                     processQueue();
+//                 });
+//             }, 2000);
+//         }).promise().done(function () {
+//             if (inputQueue.length > 0) {
+//                 let nextInput = inputQueue.shift();
+//                 moveElevator(nextInput.floor, nextInput.elevator);
+//             }
+//         });
+//     }
+       
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {debugger
+//             let selected = document.getElementById('A' + i);
+
+//             let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - i) * 65));
+
+//             let nearestElevator = distanceToElevator1 > distanceToElevator2 ? "e2" : "e1";
+
+//             inputQueue.push({ floor: i, elevator: nearestElevator });
+
+//             if (!isAnimating) {
+//                 processQueue();
+//             }
+//         });
+//     }
+// });
+
+
+
+
+        // document.getElementById('num').addEventListener("change", function () {
+        //     let floorcount = parseInt(document.getElementById('num').value);
+
+        //     let elevator1 = document.getElementById('e1');
+        //     let elevator2 = document.getElementById('e2');
+
+
+        //     for (let i = floorcount; i > 0; i--)
+        //         document.getElementById('A' + i).addEventListener("click", function () {
+        //             debugger
+        //             let selected = document.getElementById('A' + i)
+        //             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+        //             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+        //             let selectedPosition = i;
+
+        //             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+        //             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+        //             if (distanceToElevator1 > distanceToElevator2) {
+        //                 nearestElevator = "e2";
+        //                 var e2 = $('#e2');
+        //                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //             } else {
+        //                 nearestElevator = "e1";
+        //                 var e1 = $('#e1');
+        //                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //             }
+        //         })
+        // });
+
+
+
+
+//         document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false; 
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+              
+//                 $('#e1, #e2').stop();
+//                 isAnimating = false;
+//             }
+
+//             let selected = document.getElementById('A' + i);
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false; 
+//                 });
+//             }
+
+//             isAnimating = true; 
+//         });
+//     }
+// });
+
+
+// document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false; 
+//     let resumeTimeout; 
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+//                 $('#e1, #e2').stop();
+//                 clearTimeout(resumeTimeout); 
+//                 isAnimating = false;
+//             }
+
+//             let selected = document.getElementById('A' + i);
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+                   
+//                     resumeTimeout = setTimeout(function () {
+//                         e2.animate({ marginTop: 0 }, 3000);
+//                     }, 2000);
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+                   
+//                     resumeTimeout = setTimeout(function () {
+//                         e1.animate({ marginTop: 0 }, 3000);
+//                     }, 2000);
+//                 });
+//             }
+
+//             isAnimating = true; 
+//         });
+//     }
+// });
+
+
+// document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false; 
+//     let resumeTimeout; 
+//     let elevator1CurrentPosition = 0; 
+//     let elevator2CurrentPosition = 0; 
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+//                 $('#e1, #e2').stop();
+//                 clearTimeout(resumeTimeout); 
+//                 isAnimating = false;
+//             }
+
+//             let selected = document.getElementById('A' + i);
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+//                     elevator2CurrentPosition = ((floorcount - i) * 65);
+//                     resumeTimeout = setTimeout(function () {
+//                         e2.animate({ marginTop: elevator2CurrentPosition }, 3000);
+//                     }, 2000);
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+//                     elevator1CurrentPosition = ((floorcount - i) * 65);
+//                     resumeTimeout = setTimeout(function () {
+//                         e1.animate({ marginTop: elevator1CurrentPosition }, 3000);
+//                     }, 2000);
+//                 });
+//             }
+
+//             isAnimating = true; 
+//         });
+//     }
+// });
+
+
+
+
+
+
+
+// document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false; 
+//     let resumeTimeout; 
+//     let elevator1CurrentPosition = 0; 
+//     let elevator2CurrentPosition = 0; 
+//     let inputQueue = [];
+
+//     function processQueue() {
+//         if (inputQueue.length > 0) {
+//             let nextInput = inputQueue.shift();
+//             moveElevator(nextInput.floor, nextInput.elevator);
+//         }
+//     }
+
+//     function moveElevator(selectedFloor, elevatorId) {
+//         if (isAnimating) {
+//             $('#e1, #e2').stop();
+//             clearTimeout(resumeTimeout); 
+//             isAnimating = false;
+//         }
+
+//         let elevator = elevatorId === "e1" ? $('#e1') : $('#e2');
+//         let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+//         let selectedPosition = selectedFloor;
+
+//         let distanceToElevator = Math.abs(elevatorPosition - ((floorcount - selectedFloor) * 65));
+
+//         isAnimating = true; 
+
+//         elevator.animate({ marginTop: ((floorcount - selectedFloor) * 65) }, 3000, function () {
+//             isAnimating = false;
+//             elevator1CurrentPosition = elevatorId === "e1" ? ((floorcount - selectedFloor) * 65) : elevator1CurrentPosition;
+//             elevator2CurrentPosition = elevatorId === "e2" ? ((floorcount - selectedFloor) * 65) : elevator2CurrentPosition;
+            
+//             resumeTimeout = setTimeout(function () {
+//                 elevator.animate({ marginTop: elevatorId === "e1" ? elevator1CurrentPosition : elevator2CurrentPosition }, 2000, function() {
+//                     processQueue(); 
+//                 });
+//             }, 2000);
+//         });
+//     }
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             let selected = document.getElementById('A' + i);
+
+//             let distanceToElevator1 = Math.abs(elevator1CurrentPosition - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2CurrentPosition - ((floorcount - i) * 65));
+
+//             let nearestElevator = distanceToElevator1 > distanceToElevator2 ? "e2" : "e1";
+
+//             inputQueue.push({ floor: i, elevator: nearestElevator });
+
+//             if (!isAnimating) {
+//                 processQueue();
+//             }
+//         });
+//     }
+// });
+
+
+
+
+
+
+
+
+
+
+       
+
+
+ 
+
+// document.getElementById('num').addEventListener("change", function () {
+//     let floorcount = parseInt(document.getElementById('num').value);
+
+//     let elevator1 = document.getElementById('e1');
+//     let elevator2 = document.getElementById('e2');
+//     let isAnimating = false;
+//     let resumeTimeout;
+//     let elevator1CurrentPosition = 0; 
+//     let elevator2CurrentPosition = 0; 
+
+//     for (let i = floorcount; i > 0; i--) {
+//         document.getElementById('A' + i).addEventListener("click", function () {
+//             if (isAnimating) {
+//                 $('#e1, #e2').stop();
+//                 clearTimeout(resumeTimeout);
+//                 isAnimating = false;
+//             }
+
+//             let selected = document.getElementById('A' + i);
+//             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+//             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+//             let selectedPosition = i;
+
+//             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+//             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+//             if (distanceToElevator1 > distanceToElevator2) {
+//                 nearestElevator = "e2";
+//                 var e2 = $('#e2');
+//                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+//                     elevator2CurrentPosition = ((floorcount - i) * 65);
+
+                   
+//                     setTimeout(function () {
+//                         resumeTimeout = setTimeout(function () {
+//                             e2.animate({ marginTop: elevator2CurrentPosition }, 3000);
+//                         }, 2000);
+//                     }, 2000);
+//                 });
+//             } else {
+//                 nearestElevator = "e1";
+//                 var e1 = $('#e1');
+//                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000, function () {
+//                     isAnimating = false;
+//                     elevator1CurrentPosition = ((floorcount - i) * 65);
+
+                  
+//                     setTimeout(function () {
+//                         resumeTimeout = setTimeout(function () {
+//                             e1.animate({ marginTop: elevator1CurrentPosition }, 3000);
+//                         }, 2000);
+//                     }, 2000);
+//                 });
+//             }
+
+//             isAnimating = true;
+//         });
+//     }
+// });
+
+
+
+
+
+
+        // document.getElementById('num').addEventListener("change", function () {
+        //     let floorcount = parseInt(document.getElementById('num').value);
+        //     let elevator1 = document.getElementById('e1');
+        //     let elevator2 = document.getElementById('e2');
+        //     let queue = [];
+        //     let isMoving = false;
+
+        //     function addToQueue(floor) {
+        //         queue.push(floor);
+        //         queue.sort((a, b) => a - b);
+        //         if (!isMoving) {
+        //             processQueue();
+        //         }
+        //     }
+
+
+        //     function animateElevator(elevator, floor) {
+        //         let destination = (floorcount - floor) * 65;
+        //         elevator.animate({ marginTop: destination }, {
+        //             duration: 3000,
+        //             complete: function () {
+        //                 processQueue();
+        //             }
+                    
+        //         });
+        //     }
+        //     function processQueue() {
+        //                 if (queue.length === 0) {
+        //                     isMoving = false;
+        //                     return;
+        //                 }
+
+        //                 isMoving = true;
+        //                 let floor = queue.shift();
+        //                 let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+        //                 let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+
+        //                 let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+        //                 let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+        //                 if (distanceToElevator1 > distanceToElevator2) {
+        //                     animateElevator(elevator2, floor);
+        //                     var elevator2 = $('#e2');
+        //                     elevator2.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //                 } else {
+        //                     animateElevator(elevator1, floor);
+        //                     var elevator1 = $('#e1');
+        //                     elevator1.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //                 }
+        //             }
+
+
+        //     for (let i = floorcount; i > 0; i--) {
+        //         document.getElementById('A' + i).addEventListener("click", function () {
+        //             addToQueue(i);
+                    
+        //         });
+        //     }
+        // });
+
+
+
+        // document.getElementById('num').addEventListener("change", function () {
+        //     let floorcount = parseInt(document.getElementById('num').value);
+
+        //     let elevator1 = document.getElementById('e1');
+        //     let elevator2 = document.getElementById('e2');
+
+
+        //     let elevatorQueue = [];
+
+        //     for (let i = floorcount; i > 0; i--) {
+        //         document.getElementById('A' + i).addEventListener("click", function () {
+        //             debugger
+        //             let selected = document.getElementById('A' + i);
+        //             let selectedPosition = i;
+        //             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+        //             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+
+        //             elevatorQueue.push(selectedPosition);
+
+
+        //             elevatorQueue.sort((a, b) => {
+        //                     return Math.abs(elevator1Position - a * 65) - Math.abs(elevator2Position - b * 65);
+        //                 });
+
+        //                 if (elevatorQueue.length === 1) {
+
+        //                     moveElevator();
+        //                 }
+        //             });
+        //         }
+
+        //         function moveElevator() {
+        //             if (elevatorQueue.length > 0) {
+        //                 let selectedPosition = elevatorQueue[0];
+        //                 let distanceToElevator1 = Math.abs(parseInt(window.getComputedStyle(elevator1).marginTop) - selectedPosition * 65);
+        //                 let distanceToElevator2 = Math.abs(parseInt(window.getComputedStyle(elevator2).marginTop) - selectedPosition * 65);
+
+        //                 let selectedElevator = distanceToElevator1 > distanceToElevator2 ? elevator2 : elevator1;
+
+
+        //                 $(selectedElevator).animate({ marginTop: selectedPosition * 65 }, 3000, function () {
+
+        //                     elevatorQueue.shift();
+
+        //                     setTimeout(moveElevator, 2000);
+        //                 });
+        //             }
+        //         }
+        //         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // document.getElementById('num').addEventListener("change", function () {
+        //     let floorcount = parseInt(document.getElementById('num').value);
+
+        //     let elevator1 = document.getElementById('e1');
+        //     let elevator2 = document.getElementById('e2');
+
+
+        //     for (let i = floorcount; i > 0; i--)
+        //         document.getElementById('B' + i).addEventListener("click", function () {
+        //             debugger
+        //             let selected = document.getElementById('B' + i)
+        //             let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+        //             let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+        //             let selectedPosition = i;
+
+        //             let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+        //             let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+        //             if (distanceToElevator1 > distanceToElevator2) {
+        //                 nearestElevator = "e2";
+        //                 var e2 = $('#e2');
+        //                 e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //             } else {
+        //                 nearestElevator = "e1";
+        //                 var e1 = $('#e1');
+        //                 e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+        //             }
+        //         })
+        // });
+
+
+
+
+
+    </script>
+</body>
+
+</html>

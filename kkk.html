@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .building {
+            width: 400px;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            background-color: turquoise;
+            position: relative;
+        }
+
+        .floor {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 48px;
+            color: black;
+            font-size: 10px;
+            margin-top: 10px;
+            background: #CCC26B;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .elevator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            margin-right: 10px;
+            margin-left: 10px;
+            width: 30px;
+            height: 45px;
+            background-color: #ECF2F7;
+            border: 1px solid black;
+            border-top: 4px solid black;
+            position: relative;
+        }
+
+        .btn {
+            width: 30px;
+            height: 30px;
+            background-color: goldenrod;
+            border: 2px solid darkgoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="num" type="number">
+    <div class="building">
+        <div id="floorsL" style="margin-left: 40px;"> </div>
+        <div id="elevators" style="display: flex;"></div>
+        <div id="floorsR" style="margin-right: 40px;"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let input = document.getElementById('num');
+        let selectedfloor; 
+        let isAnimating = false;
+        let array = [];
+        let pendingInputs = [];
+
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                createFloorButton('A', i, 'floorsL');
+                createFloorButton('B', i, 'floorsR');
+            }
+            createElevator('e1');
+            createElevator('e2');
+        });
+
+        function createFloorButton(prefix, i, containerId) {
+            let block = document.createElement('div');
+            let buttons = document.createElement('button');
+            block.className = 'floor';
+            buttons.className = 'btn';
+            buttons.classList.add("btn" + i);
+            buttons.id = prefix + i;
+            buttons.textContent = i;
+            document.getElementById(containerId).appendChild(block);
+            block.appendChild(buttons);
+        }
+
+        function createElevator(elevatorId) {
+            let elevator = document.createElement("div");
+            elevator.className = "elevator";
+            elevator.id = elevatorId;
+            elevator.textContent = elevatorId.charAt(1);
+            elevators.appendChild(elevator);
+        }
+
+        function startElevatorAnimation(sortedArray, elevator, dis) {
+            if (sortedArray.length > 0) {
+                let selectedfloor = sortedArray[0];
+                elevator.animate({ marginTop: ((input.value - selectedfloor) * 60) + 10 }, 1000 * dis, function () {
+                    sortedArray.shift();
+                    console.log("shift()", sortedArray);
+
+                    if (sortedArray.length > 0) {
+                        setTimeout(function () {
+                            startElevatorAnimation(sortedArray, elevator, dis);
+                        }, 1000);
+                    } else {
+                        isAnimating = false;
+                        array = [];
+
+                        if (pendingInputs.length > 0) {
+                            let nextDirection = pendingInputs[0] < selectedfloor ? "down" : "up";
+                            handlePendingInputs(nextDirection);
+                        }
+                    }
+                });
+            }
+        }
+
+        function handlePendingInputs(direction) {
+            let elevatorId = 'e1'; 
+            let elevator = $('#' + elevatorId);
+            let nextInput = pendingInputs.shift();
+            array.unshift(nextInput);
+            console.log("unshift", array);
+
+            let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+            let distanceToElevator = Math.abs(elevatorPosition - ((input.value - nextInput) * 60));
+            let dis = distanceToElevator / 60;
+            startElevatorAnimation([...array], elevator, dis);
+            isAnimating = true;
+        }
+        let floorcount = parseInt(document.getElementById('num').value);
+        for (let i = floorcount; i <= 0; i++) {
+            document.getElementById('A' + i).addEventListener("click", function () {debugger
+                handleFloorClick(i);
+            });
+
+            document.getElementById('B' + i).addEventListener("click", function () {
+                handleFloorClick(i);
+            });
+        }
+
+        function handleFloorClick(selectedPosition) {
+            if (isAnimating) {
+                if (selectedPosition < selectedfloor) {
+                    pendingInputs.push(selectedPosition);
+                    console.log("pendingInputs", pendingInputs);
+                } else {
+                    array.push(selectedPosition);
+                }
+            } else {
+                let elevatorId = 'e1'; 
+                let elevator = $('#' + elevatorId);
+                let elevatorPosition = parseInt(window.getComputedStyle(elevator[0]).marginTop);
+                selectedfloor = selectedPosition;
+                array.unshift(selectedPosition);
+                console.log("unshift", array);
+
+                let distanceToElevator = Math.abs(elevatorPosition - ((input.value - selectedPosition) * 60));
+                let dis = distanceToElevator / 60;
+
+                if (array.length > 1) {
+                    if (selectedPosition < elevatorPosition) {
+                        array.sort(function (a, b) { return a - b; });
+                        console.log("sort", array);
+                    } else {
+                        array.sort(function (a, b) { return b - a; });
+                        console.log("sort", array);
+                    }
+                }
+
+                startElevatorAnimation([...array], elevator, dis);
+                isAnimating = true;
+            }
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       .building {
+            width: 400px;
+            height: 100%;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            background-color: turquoise;
+            position: relative;
+        }
+
+        .floor {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 80px;
+            height: 50px;
+            color: black;
+            font-size: 10px;
+            margin: 10px 0px;
+            background: #ccc26b;
+            border: 1px solid black;
+            text-align: center;
+        }
+
+        .elevator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 10px;
+            width: 30px;
+            height: 40px;
+            background-color: #ecf2f7;
+            border: 2px solid black;
+            border-top: 5px solid black;
+            position: relative;
+        }
+
+        .btn {
+            width: 30px;
+            height: 30px;
+            background-color: goldenrod;
+            border: 2px solid darkgoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="num" type="number">
+    <div class="building">
+        <div id="floorsL" style="margin-left: 40px;"></div>
+        <div id="elevators" style="display: flex;"></div>
+        <div id="floorsR" style="margin-right: 40px;"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Your existing script goes here
+        let input = document.getElementById('num');
+        let ongoingAnimation = false;
+
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'A' + i;
+                buttons.textContent = i
+                floorsL.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+        document.getElementById('num').addEventListener("change", function () {
+            let floorcount = parseInt(input.value);
+            for (let i = floorcount; i > 0; i--) {
+                let block = document.createElement('div');
+                let buttons = document.createElement('button');
+                block.className = 'floor';
+                buttons.className = 'btn';
+                buttons.classList.add("btn" + i)
+                buttons.id = 'B' + i;
+                buttons.textContent = i
+                floorsR.appendChild(block);
+                block.appendChild(buttons);
+            }
+        })
+
+        document.getElementById('num').addEventListener("change", function () {
+            let ele1 = document.createElement("div");
+            ele1.className = "elevator";
+            ele1.id = "e1";
+            ele1.textContent = 1;
+            elevators.appendChild(ele1);
+
+        })
+
+        document.getElementById('num').addEventListener("change", function () {
+            let ele2 = document.createElement("div");
+            ele2.className = "elevator";
+            ele2.id = "e2";
+            ele2.textContent = 2;
+            elevators.appendChild(ele2);
+        })
+
+            // Create floors and elevators here
+
+            for (let i = floorcount; i > 0; i--) {
+                document.getElementById('A' + i).addEventListener("click", function () {
+                    handleButtonClick(i, "A");
+                });
+
+                document.getElementById('B' + i).addEventListener("click", function () {
+                    handleButtonClick(i, "B");
+                });
+            }
+        });
+
+        function handleButtonClick(floor, direction) {
+            if (ongoingAnimation) {
+                // Stop the ongoing animation and handle the new input
+                stopElevatorAnimation();
+                // Wait for some time (you can adjust the duration)
+                setTimeout(function () {
+                    startElevatorAnimation(floor, direction);
+                }, 2000);
+            } else {
+                // If no ongoing animation, start the animation directly
+                startElevatorAnimation(floor, direction);
+            }
+        }
+
+        function startElevatorAnimation(floor, direction) {
+            // Your animation logic goes here
+            let selected = document.getElementById('A' + i)
+                    let elevator1Position = parseInt(window.getComputedStyle(elevator1).marginTop);
+                    let elevator2Position = parseInt(window.getComputedStyle(elevator2).marginTop);
+                    let selectedPosition = i;
+
+                    let distanceToElevator1 = Math.abs(elevator1Position - ((floorcount - i) * 65));
+                    let distanceToElevator2 = Math.abs(elevator2Position - ((floorcount - i) * 65));
+
+                    if (distanceToElevator1 > distanceToElevator2) {
+                        nearestElevator = "e2";
+                        var e2 = $('#e2');
+                        e2.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+                    } else {
+                        nearestElevator = "e1";
+                        var e1 = $('#e1');
+                        e1.animate({ marginTop: ((floorcount - i) * 65) }, 3000);
+                    }
+            
+            ongoingAnimation = true;
+        }
+
+        function stopElevatorAnimation() {
+            // Your logic to stop the ongoing animation goes here
+            ongoingAnimation = false;
+        }
+    </script>
+</body>
+
+</html>
